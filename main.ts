@@ -5,16 +5,19 @@
 // Setup promises a favour; the twist is a misheard snack order plus
 // a complaint about manners.
 import { mkdirSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+
+const MAX_CHARS = 200;
 
 const LINE =
   "The sock asked for a lift to the laundry room. I heard 'light snack', the directions were unclear, and honestly it never said please.";
 
 // The sealed scorer only accepts 1–200 characters, one line, UTF-8.
-if ([...LINE].length > 200 || LINE.trim() === "" || LINE.includes("\n")) {
-  throw new Error("entry line violates the 200-character single-line rule");
+if ([...LINE].length > MAX_CHARS || LINE.trim() === "" || LINE.includes("\n")) {
+  throw new Error(`entry line violates the ${MAX_CHARS}-character single-line rule`);
 }
 
 const out = process.env.ENTRY_OUTPUT ?? "/output/entry.txt";
-mkdirSync(out.slice(0, out.lastIndexOf("/")) || ".", { recursive: true });
+mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, LINE, "utf8");
 console.log(LINE);
